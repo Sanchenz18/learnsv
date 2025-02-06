@@ -2,7 +2,6 @@
 {"dg-publish":true,"permalink":"/SystemVerilog/SV_DataType/SystemVerilog_DataType/"}
 ---
 
-
 ## Data-type
 | Data-type | 2-state/4-state | # Bits | signed/unsigned | C equivalent |
 | :-------: | :-------------: | :----: | :-------------: | :----------: |
