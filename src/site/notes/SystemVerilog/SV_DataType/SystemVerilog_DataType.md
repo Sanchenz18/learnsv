@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/SystemVerilog/SV_DataType/SystemVerilog_DataType/"}
+{"dg-publish":true,"permalink":"/SystemVerilog/SV_DataType/SystemVerilog_DataType/","noteIcon":"SystemVerilog/imgs/icon.svg"}
 ---
 
 ## Data-type
