@@ -97,6 +97,7 @@ array = new [array.size() + 1] (array);
 
 #### 关联数组（Associative arrays）
 索引是一个确定的`key`，声明时需要声明索引的类型，可以是任何数据类型或者通配符`*`。
+- 关联数组实现了一个查找表，对于每个元素有一个索引。
 - 通配符增加模拟时间，应该避免使用。
 
 ```verilog
@@ -108,6 +109,9 @@ m_name ["Rachel"] = 30;
 m_name ["Orange"] = 2;
 
 m_data [32'h123] = 3333;
+
+//Checks whether an element exists at specified index, returns 1; else 0
+abc.exist();
 
 abc.num();          // Return the number of entires in the array
 ```
@@ -129,8 +133,76 @@ int data = m_queue.pop_front(); // Pop from the queue
 data_type name[$:255];          // Needed the maxmium value
 ```
 
+#### 数组With操作符
+根据`with`后给出的表达式来索引选定数组中的元素。
 
-## 字符串
+##### 对于一下方法为必须：
+```verilog
+int array[9] = '{4, 7, 2, 5, 7, 1, 6, 3, 1};
+int res[$];
+
+initial begin
+	res = array.find(x) with (x > 3);                       // Returns all elements satisfying the given expression
+	$display ("find(x)         : %p", res);
+
+    res = array.find_index with (item == 4);                // Returns the indices of all elements satisfying the given expression|
+    $display ("find_index      : res[%0d] = 4", res[0]);
+
+    res = array.find_first with (item < 5 & item >= 3);     // Returns the first element satisfying the given expression
+    $display ("find_first      : %p", res);
+
+    res = array.find_first_index(x) with (x > 5);           // Returns the index of the first element satisfying the given expression
+    $display ("find_first_index: %p", res);
+
+    res = array.find_last with (item <= 7 & item > 3);      // Returns the last element satisfying the given expression
+    $display ("find_last       : %p", res);
+
+    res = array.find_last_index(x) with (x < 3);            // Returns the index of the last element satisfying the given expression
+    $display ("find_last_index : %p", res);
+end
+```
+##### 对于一下方法为可选：
+```verilog
+int array[9] = '{4, 7, 2, 5, 7, 1, 6, 3, 1};
+int res[$];
+
+initial begin
+    res = array.min();                     // Returns the element with minimum value or whose expression evaluates to a minimum
+    $display ("min          : %p", res);
+
+    res = array.max();                     // Returns the element with maximum value or whose expression evaluates to a maximum
+    $display ("max          : %p", res);
+
+    res = array.unique();                  // Returns all elements with unique values or whose expression evaluates to a unique value
+    $display ("unique       : %p", res);
+
+    res = array.unique(x) with (x < 3);
+    $display ("unique       : %p", res);
+
+    res = array.unique_index;              // Returns the indices of all elements with unique values or whose expression evaluates to a unique value
+    $display ("unique_index : %p", res);
+end
+```
+##### 数组排序方法
+```verilog
+int array[9] = '{4, 7, 2, 5, 7, 1, 6, 3, 1};
+
+initial begin
+    array.reverse();                    // Reverses the order of elements in the array
+    $display ("reverse  : %p", array);
+
+    array.sort();                       // Sorts the array in ascending order, optionally using `with` clause
+    $display ("sort     : %p", array);
+
+    array.rsort();                      // Sorts the array in descending order, optionally using `with` clause
+    $display ("rsort    : %p", array);
+
+    for (int i = 0; i < 5; i++) begin
+    	array.shuffle();                // Randomizes the order of the elements in the array. `with` clause is not allowed here.
+      $display ("shuffle Iter:%0d  = %p", i, array);
+    end
+end
+```
 
 ## 结构体和联合体
 
