@@ -3,32 +3,26 @@
 ---
 
 ## Data-type
-| Data-type | 2-state/4-state | # Bits | signed/unsigned | C equivalent |
-| :-------: | :-------------: | :----: | :-------------: | :----------: |
-|    reg    |        4        |  >= 1  |    unsigned     |              |
-|   wire    |        4        |  >= 1  |    unsigned     |              |
-|  integer  |        4        |   32   |     signed      |              |
-|   real    |                 |        |                 |    double    |
-|   time    |                 |        |                 |              |
-| realtime  |                 |        |                 |    double    |
-|           |                 |        |                 |              |
-|   logic   |        4        |  >=1   |    unsigned     |              |
-|    bit    |        2        |  >= 1  |    unsigned     |              |
-|   byte    |        2        |   8    |     signed      |     char     |
-| shortint  |        2        |   16   |     signed      |  short int   |
-|    int    |        2        |   32   |     signed      |     int      |
-|  longint  |        2        |   64   |     signed      |   long int   |
-| shortreal |                 |        |                 |    float     |
+
+| Data-type | 2-state/4-state | # Bits | signed/unsigned | C equivalent | Defuat (Notes) |
+| :-------: | :-------------: | :----: | :-------------: | :----------: | :------------: |
+|    reg    |        4        |  >= 1  |    unsigned     |     N/A      |       x        |
+|   wire    |        4        |  >= 1  |    unsigned     |     N/A      |       z        |
+|  integer  |        4        |   32   |     signed      |     N/A      |       x        |
+|   real    |        2        |   64   |     signed      |    double    |      0.0       |
+|   time    |        4        |   64   |    unsigned     |     N/A      |       0        |
+| realtime  |        2        |   64   |     signed      |    double    |   0.0 (12e3)   |
+|           |                 |        |                 |              |                |
+|   logic   |        4        |  >=1   |    unsigned     |     N/A      |       x        |
+|    bit    |        2        |  >=1   |    unsigned     |   uintN_t*   |       0        |
+|   byte    |        2        |   8    |     signed      |     char     |       0        |
+| shortint  |        2        |   16   |     signed      |  short int   |       0        |
+|    int    |        2        |   32   |     signed      |     int      |       0        |
+|  longint  |        2        |   64   |     signed      |  long long   |       0        |
+| shortreal |        2        |   32   |     signed      |    float     |      0.0       |
 
 ## 四值逻辑
-### tri
-- 与wire是相同的数据类型。
-- 可以用于多个diver驱动一个net的情况。
-- wire或者tri上来自多个相同强度源的逻辑冲突会导致不定态。
-### integer
-- 默认值是X。
- *==Usage：==* 
-	`integer integer_data;`
+
 ### time
 - 用于模拟时间测量的特殊数据类型。表示64位无符号整数
 - 与$time系统函数结合保存使用来保存当前的仿真时间
@@ -40,17 +34,6 @@
  *==Usage：==* 
 	`real veriable_name;`
 	`real real_data = 12e3;`
-
-## 二值逻辑
-### byte
-- 表示8位有符号整数。默认值为0。
-*==Usage：==*
-`byte variable_name;`
-### int
-- 常用于testbench，表示32位有符号整数。默认值为0。
-- *shortint(16bits)*、*longint(64bits)*.
-*==Usage：==*
-`int variable_name;`
 
 ## 数组
 
@@ -64,6 +47,7 @@
 ```verilog
 bit [2:0][7:0] m_data      ;   // Packed
 ```
+
 ##### 非压缩数组（Unpacked arrays）
 维度声明在变量名前
 - 不可综合，用于仿真。
@@ -71,6 +55,7 @@ bit [2:0][7:0] m_data      ;   // Packed
 ```verilog
 bit [15:0]     m_mem [10:0];   // Unpacked
 ```
+
 #### 动态数组（Dynamic arrays）
 可以在runtime中需要扩展空间时自动扩展。
 - 未初始化的动态数组默认大小为0。
@@ -83,6 +68,7 @@ m_mem.new[];    // Constructor function, initialize the dynamic array
 m_mem.size();   // Return size of the array, return 0 when not been created
 m_mem.delete(); // Empties the array resulting in a zero-sized array
 ```
+
 ##### 对动态数组中添加元素
 `new()`函数可以用于复制被扩展数组的元素到新的数组。
 
@@ -128,6 +114,7 @@ m_queue.push_back(23); 		    // Push into the queue
 
 int data = m_queue.pop_front(); // Pop from the queue
 ```
+
 ##### 有界队列
 ```verilog
 data_type name[$:255];          // Needed the maxmium value
@@ -142,69 +129,160 @@ int array[9] = '{4, 7, 2, 5, 7, 1, 6, 3, 1};
 int res[$];
 
 initial begin
-	res = array.find(x) with (x > 3);                       // Returns all elements satisfying the given expression
+	// Returns all elements satisfying the given expression
+	res = array.find(x) with (x > 3);
 	$display ("find(x)         : %p", res);
 
-    res = array.find_index with (item == 4);                // Returns the indices of all elements satisfying the given expression|
+	// Returns the indices of all elements satisfying the given expression
+    res = array.find_index with (item == 4);
     $display ("find_index      : res[%0d] = 4", res[0]);
 
-    res = array.find_first with (item < 5 & item >= 3);     // Returns the first element satisfying the given expression
+	// Returns the first element satisfying the given expression
+    res = array.find_first with (item < 5 & item >= 3);
     $display ("find_first      : %p", res);
 
-    res = array.find_first_index(x) with (x > 5);           // Returns the index of the first element satisfying the given expression
+	// Returns the index of the first element satisfying the given expression
+    res = array.find_first_index(x) with (x > 5);
     $display ("find_first_index: %p", res);
 
-    res = array.find_last with (item <= 7 & item > 3);      // Returns the last element satisfying the given expression
+	// Returns the last element satisfying the given expression
+    res = array.find_last with (item <= 7 & item > 3);
     $display ("find_last       : %p", res);
 
-    res = array.find_last_index(x) with (x < 3);            // Returns the index of the last element satisfying the given expression
+	// Returns the index of the last element satisfying the given expression
+    res = array.find_last_index(x) with (x < 3);
     $display ("find_last_index : %p", res);
 end
 ```
+
 ##### 对于一下方法为可选：
 ```verilog
 int array[9] = '{4, 7, 2, 5, 7, 1, 6, 3, 1};
 int res[$];
 
 initial begin
-    res = array.min();                     // Returns the element with minimum value or whose expression evaluates to a minimum
+	// Returns the element with minimum value or whose expression evaluates to a minimum
+	res = array.min();
     $display ("min          : %p", res);
 
-    res = array.max();                     // Returns the element with maximum value or whose expression evaluates to a maximum
+	// Returns the element with maximum value or whose expression evaluates to a maximum
+    res = array.max();
     $display ("max          : %p", res);
 
-    res = array.unique();                  // Returns all elements with unique values or whose expression evaluates to a unique value
+	// Returns all elements with unique values or whose expression evaluates to a unique value
+    res = array.unique();
     $display ("unique       : %p", res);
-
     res = array.unique(x) with (x < 3);
     $display ("unique       : %p", res);
 
-    res = array.unique_index;              // Returns the indices of all elements with unique values or whose expression evaluates to a unique value
+	// Returns the indices of all elements with unique values or whose expression evaluates to a unique value
+    res = array.unique_index;
     $display ("unique_index : %p", res);
 end
 ```
+
 ##### 数组排序方法
 ```verilog
 int array[9] = '{4, 7, 2, 5, 7, 1, 6, 3, 1};
 
 initial begin
-    array.reverse();                    // Reverses the order of elements in the array
+    // Reverses the order of elements in the array
+	array.reverse();
     $display ("reverse  : %p", array);
 
-    array.sort();                       // Sorts the array in ascending order, optionally using `with` clause
+    // Sorts the array in ascending order, optionally using `with` clause
+    array.sort();
     $display ("sort     : %p", array);
 
-    array.rsort();                      // Sorts the array in descending order, optionally using `with` clause
+    // Sorts the array in descending order, optionally using `with` clause
+    array.rsort();
     $display ("rsort    : %p", array);
 
     for (int i = 0; i < 5; i++) begin
-    	array.shuffle();                // Randomizes the order of the elements in the array. `with` clause is not allowed here.
+	    // Randomizes the order of the elements in the array.
+    	array.shuffle();
       $display ("shuffle Iter:%0d  = %p", i, array);
     end
 end
 ```
 
 ## 结构体和联合体
+
+#### Unpacked Struct
+结构体中可以包含不同数据类型的元素，这点不同于数组中的元素都是同一数据类型。结构体可以被整体或按照其中元素名字引用。
+```verilog
+struct {
+	[list of variables]
+} struct_name;             // Unpacked Struct
+
+struct_name = '{"val_name", val1, val2};
+```
+
+```verilog
+struct {
+	string fruit;
+	int    count;
+	byte   expiry;
+} st_fruit;
+
+initial begin
+    st_fruit = '{"apple", 4, 15};
+
+    // Display the structure variable
+    $display ("st_fruit = %p", st_fruit);
+
+    // Change fruit to pineapple, and expiry to 7
+    st_fruit.fruit = "pineapple";
+    st_fruit.expiry = 7;
+end
+```
+#### Packed Struct
+压缩结构体是一种将向量按成员变量名称切分为各部分的机制，各部分在内存中连续存储
+- `packed`声明默认无符号
+```verilog
+typedef struct packed {
+  bit [3:0] mode;
+  bit [2:0] cfg;
+  bit       en;
+} st_ctrl;
+
+module tb;
+  st_ctrl    ctrl_reg;
+
+  initial begin
+    ctrl_reg = '{4'ha, 3'h5, 1};
+    $display ("ctrl_reg = %p", ctrl_reg);
+
+    ctrl_reg.mode = 4'h3;
+    $display ("ctrl_reg = %p", ctrl_reg);
+
+    ctrl_reg = 8'hfa;
+    $display ("ctrl_reg = %p", ctrl_reg);
+  end
+endmodule
+```
+#### Typedef
+当我们需要在同一个块里面使用多个相同组成的结构体时，结构体就需要被`typedef`为一个用户自定义数据类型，接下来就可以使用这个数据类型来声明变量。
+
+```verilog
+typedef struct {
+	string fruit;
+	int    count;
+	byte 	 expiry;
+} st_fruit;
+
+initial begin
+    // st_fruit is a data type, so we need to declare a variable of this data type
+    st_fruit fruit1 = '{"apple", 4, 15};
+    st_fruit fruit2;
+
+    // Note that contents of this variable is copied into the other
+   	fruit2 = fruit1;
+
+    // Change fruit1 to see if fruit2 is affected
+    fruit1.fruit = "orange";
+end
+```
 
 ## 枚举类型
 
@@ -266,10 +344,6 @@ SystemVerilog包括了一系列method来处理枚举类型。
 | num()   | function int num();                      | 返回给定枚举中的成员数量    |
 | name()  | function string name();                  | 返回给定枚举值的字符串表示形式 |
 
-## 自定义类型
-
-
-
 ## 数据类型转换
 
 *转换发生在编译时，不会在运行时错误。不适合面向对象的编程概念。*
@@ -282,7 +356,8 @@ data_type'(variable or expression or value);
 ````verilog
 int_data = int'(integer_data);
 ````
-### real to in Convertion
+
+#### real to in Convertion
 
 `real`到`int`的转换会四舍五入到最近的整数而不是截断(舍弃小数部分)
 
@@ -295,6 +370,7 @@ shortint'({8'hab, 8'hef})
 integer  	$rtoi ( real_val )
 real 		$itor ( int_val)
 ```
+
 ## Void
 
  `void`表示没有存在数据，能够声明作为被指定作为function和task的返回类型。
