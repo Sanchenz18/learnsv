@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/LearnSV/","tags":["gardenEntry"]}
+{"dg-publish":true,"permalink":"/LearnSV/","tags":["gardenEntry"],"noteIcon":"/imgs/icon.svg"}
 ---
 
 ![background.jpg](/img/user/SystemVerilog/imgs/background.jpg)
