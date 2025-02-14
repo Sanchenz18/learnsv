@@ -3,14 +3,15 @@
 ---
 
 ## FIles Tree
-
-#### 	Project
-	 ├─data         //favicon file
+```markdown
+Project
+	 ├─data         --For favicon file
      ├─src
-	 │ ├─other0.py
-	 │ └─other1.py
+	 │ ├─OtherPythonFile0.py
+	 │ └─OtherPythonFile1.py
 	 ├─example.spec
 	 └─Makefile
+```
 ## example.spec
 
 ### 适用于Windows Poweshell环境
