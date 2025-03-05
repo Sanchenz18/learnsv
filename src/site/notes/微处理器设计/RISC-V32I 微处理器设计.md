@@ -314,9 +314,9 @@ Arithmetic and Logic Unit 算术逻辑单元，是处理器中负责运算的组
 验证程序：
 
 ```
-addi x31 zero -8 #将x30和x31写入了两个负值，
-srai x30 x31 1 #用于后续涉及到符号数、无符号数的指令的验证
-addi x1 zero 1 #验证一部分alu运算指令
+addi x31 zero -8    # 将x30和x31写入了两个负值，
+srai x30 x31 1      # 用于后续涉及到符号数、无符号数的指令的验证
+addi x1 zero 1      # 验证一部分alu运算指令
 slli x2 x1 1
 ori x3 zero 3
 xori x4 zero 4
@@ -328,7 +328,7 @@ xor x9 x8 x1
 add x10 x8 x2
 or x11 x8 x3
 addi x12 zero 12
-addi x20 zero 10 #验证分支跳转指令，#出现错误会使x1寄存器置0
+addi x20 zero 10    # 验证分支跳转指令，#出现错误会使x1寄存器置0
 beq x10 x20 8
 addi x1 zero 0
 addi x13 zero 13
@@ -350,13 +350,13 @@ addi x18 zero 18
 add x20 x18 x1
 sw x20 0(x16)
 lw x19 0(x16)
-andi x4 x5 4        #验证一部分alu指令，出现错误会覆盖正确结果
+andi x4 x5 4        # 验证一部分alu指令，出现错误会覆盖正确结果
 srli x2 x4 1
 srai x1 x2 1
 sub x3 x5 x2
 srl x4 x8 x1
 sra x3 x6 x1
-slt x20 x30 x31     #验证置位指令，正数与正数，正数与负数，负数与负数情况均包含
+slt x20 x30 x31     # 验证置位指令，正数与正数，正数与负数，负数与负数情况均包含
 slt x21 x31 x30
 slt x22 x2 x1
 slt x23 x1 x2
@@ -366,19 +366,19 @@ sltu x26 x31 x1
 sltu x27 x1 x31
 sltiu x28 x31 4
 slti x29 x5 6
-jal x20 8            #test 验证无条件跳转指令
+jal x20 8            # test 验证无条件跳转指令
 addi x1 zero 0
 jalr x20 x8 0xd8
 addi x1 zero 0
-lui x31 0x12345      #验证lui指令
+lui x31 0x12345      # 验证lui指令
 addi x31 x31 0x678
-addi x20 zero 0x10   #验证三种store指令
+addi x20 zero 0x10   # 验证三种store指令
 sb x31 0(x20)
 addi x20 x20 0x4
 sh x31 0(x20)
 addi x20 x20 0x4
 sw x31 0(x20)
-lb x22 0(x20)        #验证三种load指令
+lb x22 0(x20)        # 验证三种load指令
 lh x24 0(x20)
 lw x26 0(x20)
 ```
