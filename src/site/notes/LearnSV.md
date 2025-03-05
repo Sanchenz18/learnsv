@@ -4,6 +4,7 @@
 
 ![background.jpg](/img/user/SystemVerilog/imgs/background.jpg)
 
+2025/1/10 [[微处理器设计/RISC-V32I 微处理器设计\|RISC-V32I 微处理器设计]]
 2025/2/5 [[SystemVerilog/SV_DataType/SystemVerilog DataType\|SystemVerilog DataType]]
 2025/2/11 [[Python/一、Python基础\|一、Python基础]]
 2025/2/14 [[Python/二、Python数据结构基础\|二、Python数据结构基础]]
